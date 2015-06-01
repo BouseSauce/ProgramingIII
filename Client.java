@@ -21,7 +21,18 @@ public class Client implements Runnable
     private int id = generateID();
 
 
-
+    public Client()
+    {
+        try
+        {
+            socket = new Socket("127.0.0.1", 9876);
+            os = socket.getOutputStream();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
 
 
     public void run() {
@@ -31,30 +42,38 @@ public class Client implements Runnable
 
     private void sender(String chatInput)
     {
-
+        if(socket.isClosed())
+        {
+            try
+            {
+                socket = new Socket("127.0.0.1", 9876);
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
         try
         {
 
             //-----SENDS ID-----
 
-
-            socket = new Socket("127.0.0.1", 9876);
-            os = socket.getOutputStream();
             os.write(id);
-            socket.close();
 
             //-----SENDS MESSAGE-----
-            socket = new Socket("127.0.0.1", 9876);
-            os = socket.getOutputStream();
             byte[] b = chatInput.getBytes(Charset.forName("UTF-8"));
             os.write(b);
             System.out.println("Message Sent: " + chatInput);
-            socket.close();
 
+                socket.close();
+
+
+        } catch (Exception e)
+        {
+            e.printStackTrace();
         }
-        catch(Exception e) {e.printStackTrace();}
-
     }
+
 
     private void readFromPort(int port)
     {
@@ -63,6 +82,10 @@ public class Client implements Runnable
         {
             try
             {
+                if (new ServerSocket(port).isBound())
+                {
+                    port++;
+                }
                 serverSocket = new ServerSocket(port);
                 socket = serverSocket.accept();
                 is = socket.getInputStream();

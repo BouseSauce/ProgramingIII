@@ -8,7 +8,7 @@ import java.nio.charset.Charset;
 /**
  * Created by bousesause on 18/05/15.
  */
-public class Server extends Thread
+public class Server
 {
 
     private int port = 9876;
@@ -19,17 +19,11 @@ public class Server extends Thread
 
     public Server()
     {
-
+        
         try
         {
             serverSocket = new ServerSocket(port);
-            Thread thread = new Thread() {
-                public void run(){
-                    getMessage();
-                }
-            };
-            thread.run();
-
+            listener();
         }
         catch (Exception e)
         {
@@ -39,7 +33,7 @@ public class Server extends Thread
 
     }
 
-    public void getMessage()
+    public void listener()
     {
      while (true)
      {
@@ -61,25 +55,32 @@ public class Server extends Thread
 
     public void postMessage(int id, String s)
     {
-        try
+        while (!s.equals("quit"))
         {
+            try
 
-            //-----SENDS ID-----
-            OutputStream os;
-            socket = new Socket("127.0.0.1", 8765);
-            os = socket.getOutputStream();
-            os.write(id);
-            socket.close();
-            //-----SENDS MESSAGE-----
-            os = socket.getOutputStream();
-            socket = new Socket("127.0.0.1", 8765);
-            byte[] b = s.getBytes(Charset.forName("UTF-8"));
-            os.write(b);
-            System.out.println("Message Sent: " + s);
-            socket.close();
+            {
 
+                //-----SENDS ID-----
+                OutputStream os;
+                socket = new Socket("127.0.0.1", 8765);
+                os = socket.getOutputStream();
+                os.write(id);
+                socket.close();
+                //-----SENDS MESSAGE-----
+                os = socket.getOutputStream();
+                socket = new Socket("127.0.0.1", 8765);
+                byte[] b = s.getBytes(Charset.forName("UTF-8"));
+                os.write(b);
+                System.out.println("Message Sent: " + s);
+                socket.close();
+
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         }
-        catch(Exception e) {e.printStackTrace();}
     }
 
 }

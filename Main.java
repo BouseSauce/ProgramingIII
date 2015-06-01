@@ -14,22 +14,16 @@ public class Main extends JFrame
         System.out.println("------------------");
 
         Client c = new Client();
-        new Thread(c).start();
+        Client a = new Client();
+
 
 
         System.out.println("------------------");
         System.out.println("Starting client ");
         System.out.println("------------------");
-        c.sendMessage("Test 1");
-        c.sendMessage("Test 2");
-        c.sendMessage("Test 3");
-        c.sendMessage("Test 4");
-        c.sendMessage("Test 1");
-        c.sendMessage("Test 2");
-        c.sendMessage("Test 3");
-        c.sendMessage("Test 4");
 
-
+        c.sendMessage("Client 1");
+        a.sendMessage("Client 2");
 
     }
 
