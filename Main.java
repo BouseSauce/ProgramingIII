@@ -18,7 +18,8 @@ public class Main extends JFrame
         System.out.println("------------------");
         System.out.println("Starting client ");
         System.out.println("------------------");
-        c.sendToPort("Hi Jess TEST");
+        c.sender("Hi Jess TEST");
+        c.sender("THEST 2");
 
 
     }

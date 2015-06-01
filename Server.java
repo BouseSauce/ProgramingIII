@@ -1,6 +1,7 @@
 package sample;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
@@ -20,6 +21,7 @@ public class Server extends Thread
     private Socket socket;
     private InetAddress host;
     private ArrayList<String> messagesList;
+    private InputStream is;
 
 
     public Server()
@@ -28,10 +30,15 @@ public class Server extends Thread
         try
         {
             serverSocket = new ServerSocket(port);
-            socket = serverSocket.accept();
+
+
             host = InetAddress.getLoopbackAddress();
-            messagesList = new ArrayList<>();
-                printIncomingMessage();
+            Thread thread = new Thread() {
+                public void run(){
+                    printIncomingMessage();
+                }
+            };
+            thread.run();
 
         }
         catch (Exception e)
@@ -44,25 +51,33 @@ public class Server extends Thread
 
     public void printIncomingMessage()
     {
-        try
-            {
-                int nRead;
-                byte[] data = new byte[16384];
-                InputStream ois = socket.getInputStream();
-                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+     while (true)
+     {
+         try
+         {
+             socket = serverSocket.accept();
+             is = socket.getInputStream();
+             int nRead;
+             byte[] data = new byte[16384];
+             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
+             while ((nRead = is.read(data, 0, data.length)) != -1)
+             {
+                 buffer.write(data, 0, nRead);
+             }
+             String s = new String(buffer.toByteArray());
+             socket.close();
+             if (!s.equals(""))
+             {
+                 System.out.println("Message Recived: " + s);
+             }
+         } catch (Exception e)
+         {
+             e.printStackTrace();
+         }
 
-                while ((nRead = ois.read(data, 0, data.length)) != -1) {
-                    buffer.write(data, 0, nRead);
-                }
-                messagesList.add(new String (buffer.toByteArray()));
-                System.out.println("Message Recived: " + messagesList.get(messagesList.size() - 1));
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        //printIncomingMessage();
+     }
+
     }
 
 }

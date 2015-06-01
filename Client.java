@@ -14,7 +14,7 @@ public class Client
     OutputStream oos;
 
 
-    public void sendToPort(String chatInput)
+    public void sender(String chatInput)
     {
 
         try
@@ -25,6 +25,8 @@ public class Client
             byte[] b = chatInput.getBytes(Charset.forName("UTF-8"));
             oos.write(b);
             System.out.println("Message Sent: " + chatInput);
+            socket.close();
+
         }
         catch(Exception e) {e.printStackTrace();}
 
@@ -43,6 +45,7 @@ public class Client
             {
                 e.printStackTrace();
             }
+
 
     }
 
