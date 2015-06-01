@@ -1,13 +1,9 @@
 package sample;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectOutputStream;
-import java.net.InetAddress;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.nio.charset.Charset;
 
 /**
  * Created by bousesause on 18/05/15.
@@ -15,12 +11,9 @@ import java.util.ArrayList;
 public class Server extends Thread
 {
 
-    ObjectOutputStream oos;
     private int port = 9876;
     private ServerSocket serverSocket;
     private Socket socket;
-    private InetAddress host;
-    private ArrayList<String> messagesList;
     private InputStream is;
 
 
@@ -30,12 +23,9 @@ public class Server extends Thread
         try
         {
             serverSocket = new ServerSocket(port);
-
-
-            host = InetAddress.getLoopbackAddress();
             Thread thread = new Thread() {
                 public void run(){
-                    printIncomingMessage();
+                    getMessage();
                 }
             };
             thread.run();
@@ -49,28 +39,16 @@ public class Server extends Thread
 
     }
 
-    public void printIncomingMessage()
+    public void getMessage()
     {
      while (true)
      {
          try
          {
-             socket = serverSocket.accept();
-             is = socket.getInputStream();
-             int nRead;
-             byte[] data = new byte[16384];
-             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+             Socket clientSocket = serverSocket.accept();
+             Runnable connectionHandler = new ConnectionHandler(clientSocket);
+             new Thread(connectionHandler).start();
 
-             while ((nRead = is.read(data, 0, data.length)) != -1)
-             {
-                 buffer.write(data, 0, nRead);
-             }
-             String s = new String(buffer.toByteArray());
-             socket.close();
-             if (!s.equals(""))
-             {
-                 System.out.println("Message Recived: " + s);
-             }
          } catch (Exception e)
          {
              e.printStackTrace();
@@ -78,6 +56,30 @@ public class Server extends Thread
 
      }
 
+
+    }
+
+    public void postMessage(int id, String s)
+    {
+        try
+        {
+
+            //-----SENDS ID-----
+            OutputStream os;
+            socket = new Socket("127.0.0.1", 8765);
+            os = socket.getOutputStream();
+            os.write(id);
+            socket.close();
+            //-----SENDS MESSAGE-----
+            os = socket.getOutputStream();
+            socket = new Socket("127.0.0.1", 8765);
+            byte[] b = s.getBytes(Charset.forName("UTF-8"));
+            os.write(b);
+            System.out.println("Message Sent: " + s);
+            socket.close();
+
+        }
+        catch(Exception e) {e.printStackTrace();}
     }
 
 }

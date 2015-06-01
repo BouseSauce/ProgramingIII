@@ -1,29 +1,53 @@
 package sample;
 
 
-import java.io.ObjectInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.Charset;
+import java.util.Random;
 
 /**
  */
-public class Client
+public class Client implements Runnable
 {
-    Socket socket;
-    OutputStream oos;
+    private Socket socket;
+    private ServerSocket serverSocket;
+    private OutputStream os;
+    private InputStream is;
+    private int id = generateID();
 
 
-    public void sender(String chatInput)
+
+
+
+    public void run() {
+        readFromPort(8765);
+    }
+
+
+    private void sender(String chatInput)
     {
 
         try
         {
 
+            //-----SENDS ID-----
+
+
             socket = new Socket("127.0.0.1", 9876);
-            oos = socket.getOutputStream();
+            os = socket.getOutputStream();
+            os.write(id);
+            socket.close();
+
+            //-----SENDS MESSAGE-----
+            socket = new Socket("127.0.0.1", 9876);
+            os = socket.getOutputStream();
             byte[] b = chatInput.getBytes(Charset.forName("UTF-8"));
-            oos.write(b);
+            os.write(b);
             System.out.println("Message Sent: " + chatInput);
             socket.close();
 
@@ -32,22 +56,57 @@ public class Client
 
     }
 
-    public void readFromPort()
+    private void readFromPort(int port)
     {
 
-            ObjectInputStream ois;
+        while (true)
+        {
             try
             {
-                ois = new ObjectInputStream(socket.getInputStream());
-                String message = ((String) ois.readObject());
-                System.out.println("Message Recived: " + message);
+                serverSocket = new ServerSocket(port);
+                socket = serverSocket.accept();
+                is = socket.getInputStream();
+                int id = is.read();
+                socket.close();
+                //-----GETS ID-----
+                socket = serverSocket.accept();
+                is = socket.getInputStream();
+                int nRead;
+                byte[] data = new byte[16384];
+                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+                while ((nRead = is.read(data, 0, data.length)) != -1)
+                {
+                    buffer.write(data, 0, nRead);
+                }
+                String s = new String(buffer.toByteArray());
+                socket.close();
+                if (!s.equals(""))
+                {
+                    System.out.println(id + " : " + s);
+                }
             } catch (Exception e)
             {
                 e.printStackTrace();
             }
+        }
 
 
     }
+
+    private int generateID()
+    {
+        Random randomGenerator = new Random();
+        int ID = randomGenerator.nextInt(10000);
+        return ID;
+    }
+
+    public void sendMessage(String s)
+    {
+        sender(s);
+    }
+
+
 
 
 
