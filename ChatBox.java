@@ -2,7 +2,9 @@ package sample;
 
 import javax.swing.*;
 import java.awt.*;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 
 /**
@@ -15,8 +17,11 @@ public class ChatBox
 
     private JTextField chatInput;
     private JTextField chatDisplay;
+    private String messages;
+    public boolean getSet = false;
 
-    ChatBox()
+
+    public ChatBox()
     {
         createAndShowGUI();
     }
@@ -30,24 +35,28 @@ public class ChatBox
 
         JButton button;
 
-        chatDisplay = new JTextField("User Messages will appear here:");
+        chatDisplay = new JTextField("");
         chatDisplay.setPreferredSize(new Dimension(200, 200));
         pane.add(chatDisplay, BorderLayout.PAGE_START);
 
         JButton sendButton = new JButton("Send");
-        sendButton.addActionListener(e ->
-        {
-            setChatDisplay(getChatInput());
 
-        });
+        ActionListener actionListener = new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                getSet = true;
+            }
+        };
+        sendButton.addActionListener(actionListener);
+
+
+
 
         sendButton.setPreferredSize(new Dimension(100, 100));
         pane.add(sendButton, BorderLayout.CENTER);
 
-
-        button = new JButton("Button 3 (LINE_START)");
-
-        pane.add(button, BorderLayout.LINE_START);
 
         chatInput = new JTextField("Enter Text here");
         chatInput.setPreferredSize(new Dimension(100, 100));
@@ -59,8 +68,7 @@ public class ChatBox
     private void createAndShowGUI()
     {
 
-        //Create and set up the window.
-        JFrame frame = new JFrame("BorderLayoutDemo");
+        JFrame frame = new JFrame("Chat Application");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         try
         {
@@ -83,4 +91,5 @@ public class ChatBox
     {
         return chatInput.getText();
     }
+
 }

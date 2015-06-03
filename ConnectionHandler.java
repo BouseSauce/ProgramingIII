@@ -3,6 +3,7 @@ package sample;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
@@ -13,32 +14,30 @@ public class ConnectionHandler implements Runnable
 
     InputStream is;
     Socket socket;
+    ServerSocket serverSocket;
 
     public ConnectionHandler(Socket s)
     {
         socket = s;
-        try
-        {
-            is = socket.getInputStream();
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+    }
+
+    public ConnectionHandler(ServerSocket s)
+    {
+        serverSocket = s;
     }
 
     @Override
     public void run()
     {
 
-        while(socket.isConnected())
         try
         {
-
             int nRead;
             byte[] data = new byte[16384];
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
             int id;
+            is = socket.getInputStream();
             id = is.read();
 
             while ((nRead = is.read(data, 0, data.length)) != -1)
@@ -50,14 +49,14 @@ public class ConnectionHandler implements Runnable
             if (!s.equals(""))
             {
                 System.out.println(id + " : " + s);
-                System.out.println(Thread.currentThread());
             }
         }
-
         catch (IOException e)
         {
             e.printStackTrace();
         }
 
     }
+
+
 }

@@ -1,32 +1,16 @@
 package sample;
 
-import javax.swing.*;
 
 
-public class Main extends JFrame
+
+public class Main
 {
 
-    public static void main(String[] args) throws Exception
+    public static void main(String[] args)
     {
 
-        System.out.println("------------------");
-        System.out.println("Starting chat box");
-        System.out.println("------------------");
-
-        Client c = new Client();
-        Client a = new Client();
-
-
-
-        System.out.println("------------------");
-        System.out.println("Starting client ");
-        System.out.println("------------------");
-
-        c.sendMessage("Client 1");
-        a.sendMessage("Client 2");
-
+        Client client = new Client("127.0.0.1", 9876);
     }
-
 
 }
 

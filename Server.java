@@ -11,37 +11,38 @@ import java.nio.charset.Charset;
 public class Server
 {
 
-    private int port = 9876;
+    private int port;
     private ServerSocket serverSocket;
     private Socket socket;
-    private InputStream is;
 
 
-    public Server()
+    public Server(int aPort)
     {
-        
+        port = aPort;
         try
         {
             serverSocket = new ServerSocket(port);
-            listener();
         }
         catch (Exception e)
         {
             e.printStackTrace();
             System.exit(-1);
         }
+        listener();
+        postMessage();
 
     }
 
     public void listener()
     {
-     while (true)
+     while(true)
      {
          try
          {
-             Socket clientSocket = serverSocket.accept();
-             Runnable connectionHandler = new ConnectionHandler(clientSocket);
+             socket = serverSocket.accept();
+             Runnable connectionHandler = new ConnectionHandler(socket);
              new Thread(connectionHandler).start();
+
 
          } catch (Exception e)
          {
@@ -53,26 +54,26 @@ public class Server
 
     }
 
-    public void postMessage(int id, String s)
+    public void postMessage()
     {
-        while (!s.equals("quit"))
+       while (true)
         {
+            String s = "0hbhg";
+            int id = 12345;
+            OutputStream os;
             try
-
             {
-
                 //-----SENDS ID-----
-                OutputStream os;
-                socket = new Socket("127.0.0.1", 8765);
+
+                socket = new Socket("127.0.0.1", 1076);
                 os = socket.getOutputStream();
                 os.write(id);
-                socket.close();
+
                 //-----SENDS MESSAGE-----
-                os = socket.getOutputStream();
-                socket = new Socket("127.0.0.1", 8765);
+
                 byte[] b = s.getBytes(Charset.forName("UTF-8"));
                 os.write(b);
-                System.out.println("Message Sent: " + s);
+                System.out.println("Message was sent from server: ");
                 socket.close();
 
             }

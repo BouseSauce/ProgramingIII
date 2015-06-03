@@ -10,8 +10,10 @@ public class ServerMain extends JFrame
     {
 
         System.out.println("Starting server");
-        Server s = new Server();
+        Server s = new Server(9876);
         System.out.println("Server terminated");
+
+
     }
 
 
