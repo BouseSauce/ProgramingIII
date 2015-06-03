@@ -15,8 +15,10 @@ public class ConnectionHandler implements Runnable
     InputStream is;
     Socket socket;
     ServerSocket serverSocket;
+    private String message;
+    private int id;
 
-    public ConnectionHandler(Socket s)
+    public ConnectionHandler(Socket s) throws IOException
     {
         socket = s;
     }
@@ -24,7 +26,11 @@ public class ConnectionHandler implements Runnable
     public ConnectionHandler(ServerSocket s)
     {
         serverSocket = s;
+
+            listener();
+
     }
+
 
     @Override
     public void run()
@@ -32,11 +38,11 @@ public class ConnectionHandler implements Runnable
 
         try
         {
+
             int nRead;
             byte[] data = new byte[16384];
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
-            int id;
             is = socket.getInputStream();
             id = is.read();
 
@@ -45,18 +51,45 @@ public class ConnectionHandler implements Runnable
                 buffer.write(data, 0, nRead);
             }
 
-            String s = new String(buffer.toByteArray());
-            if (!s.equals(""))
+            if (!new String(buffer.toByteArray()).equals(""))
             {
-                System.out.println(id + " : " + s);
+                message = new String(buffer.toByteArray());
+                System.out.println("Message recived");
             }
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             e.printStackTrace();
         }
 
     }
 
+    public void listener()
+    {
+        while (true)
+        {
+            try
+            {
+                socket = serverSocket.accept();
+                Runnable connectionHandler = new ConnectionHandler(socket);
+                new Thread(connectionHandler).start();
+
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+
+        }
+
+
+    }
+    public String getMessage()
+    {
+        return message;
+    }
+
+    public int getId()
+    {
+        return id;
+    }
 
 }

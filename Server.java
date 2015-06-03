@@ -14,6 +14,7 @@ public class Server
     private int port;
     private ServerSocket serverSocket;
     private Socket socket;
+    ConnectionHandler connectionHandler;
 
 
     public Server(int aPort)
@@ -22,35 +23,18 @@ public class Server
         try
         {
             serverSocket = new ServerSocket(port);
+            connectionHandler = new ConnectionHandler(serverSocket);
         }
         catch (Exception e)
         {
             e.printStackTrace();
             System.exit(-1);
         }
-        listener();
-        postMessage();
-
-    }
-
-    public void listener()
-    {
-     while(true)
-     {
-         try
-         {
-             socket = serverSocket.accept();
-             Runnable connectionHandler = new ConnectionHandler(socket);
-             new Thread(connectionHandler).start();
+        connectionHandler.run();
+        connectionHandler.listener();
 
 
-         } catch (Exception e)
-         {
-             e.printStackTrace();
-         }
-
-     }
-
+        //postMessage();
 
     }
 

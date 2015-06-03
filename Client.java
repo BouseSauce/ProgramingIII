@@ -13,11 +13,15 @@ import java.util.Random;
  */
 public class Client
 {
+
+    private ChatBox chatBox;
+    private ConnectionHandler connectionHandler;
+
     private Socket socket;
     private ServerSocket serverSocket;
     private OutputStream os;
-    private ChatBox chatBox;
     private int id = generateID();
+
 
 
     public Client(String ipAdd, int port)
@@ -26,22 +30,26 @@ public class Client
         {
             socket = new Socket(ipAdd, port);
             os = socket.getOutputStream();
+            connectionHandler = new ConnectionHandler(socket);
+
         }
         catch (IOException e)
         {
             e.printStackTrace();
         }
         chatBox = new ChatBox();
-        while(true)
+        Runnable myRunnable = new Runnable()
         {
-            if (chatBox.getSet == true)
+            @Override
+            public void run()
             {
-                sendMessage(chatBox.getChatInput());
-                chatBox.setChatDisplay(chatBox.getChatInput());
-                chatBox.getSet = false;
-
+                while(true)
+                    messageHandler();
             }
-        }
+        };
+        myRunnable.run();
+        connectionHandler.run();
+
     }
 
 
@@ -58,7 +66,6 @@ public class Client
             byte[] b = chatInput.getBytes(Charset.forName("UTF-8"));
             os.write(b);
             System.out.println("Message Sent: " + chatInput);
-            socket.close();
 
         }
         catch (Exception e)
@@ -68,21 +75,6 @@ public class Client
     }
 
 
-    private void readFromPort()
-    {
-            try
-            {
-                serverSocket = new ServerSocket(1076);
-                socket = serverSocket.accept();
-                Runnable connectionHandler = new ConnectionHandler(socket);
-                new Thread(connectionHandler).start();
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-    }
-
     private int generateID()
     {
         Random randomGenerator = new Random();
@@ -90,10 +82,19 @@ public class Client
         return ID;
     }
 
-    public void sendMessage(String s)
+    private void messageHandler()
     {
-        sender(s);
-    }
+            if (chatBox.messageTrigger == true)
+            {
+                sender(chatBox.getChatInput());
+                System.out.println("ca'''''''");
+                chatBox.setChatDisplay(chatBox.getChatInput());
+                chatBox.messageTrigger = false;
+
+            }
+        }
+
+
 
 }
 

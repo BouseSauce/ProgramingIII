@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 
 /**
@@ -18,7 +17,7 @@ public class ChatBox
     private JTextField chatInput;
     private JTextField chatDisplay;
     private String messages;
-    public boolean getSet = false;
+    public boolean messageTrigger = false;
 
 
     public ChatBox()
@@ -46,7 +45,8 @@ public class ChatBox
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                getSet = true;
+                messageTrigger = true;
+                System.out.println(messageTrigger);
             }
         };
         sendButton.addActionListener(actionListener);
