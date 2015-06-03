@@ -43,12 +43,13 @@ public class Client
             @Override
             public void run()
             {
-                while(true)
                     messageHandler();
             }
         };
         myRunnable.run();
         connectionHandler.run();
+        connectionHandler.listener();
+
 
     }
 
@@ -84,6 +85,8 @@ public class Client
 
     private void messageHandler()
     {
+        while(true)
+        {
             if (chatBox.messageTrigger == true)
             {
                 sender(chatBox.getChatInput());
@@ -93,6 +96,7 @@ public class Client
 
             }
         }
+    }
 
 
 

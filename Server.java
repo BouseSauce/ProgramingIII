@@ -34,7 +34,7 @@ public class Server
         connectionHandler.listener();
 
 
-        //postMessage();
+        postMessage();
 
     }
 

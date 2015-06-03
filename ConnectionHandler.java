@@ -55,6 +55,7 @@ public class ConnectionHandler implements Runnable
             {
                 message = new String(buffer.toByteArray());
                 System.out.println("Message recived");
+                System.out.println(id + " : "+ message );
             }
         } catch (IOException e)
         {

@@ -19,20 +19,13 @@ public class ChatBox
     private String messages;
     public boolean messageTrigger = false;
 
-
     public ChatBox()
     {
         createAndShowGUI();
     }
-
-
     //-------------------------------------------------------------
-
     private void addComponentsToPane(Container pane)
     {
-
-
-        JButton button;
 
         chatDisplay = new JTextField("");
         chatDisplay.setPreferredSize(new Dimension(200, 200));
@@ -50,20 +43,13 @@ public class ChatBox
             }
         };
         sendButton.addActionListener(actionListener);
-
-
-
-
         sendButton.setPreferredSize(new Dimension(100, 100));
         pane.add(sendButton, BorderLayout.CENTER);
-
 
         chatInput = new JTextField("Enter Text here");
         chatInput.setPreferredSize(new Dimension(100, 100));
         pane.add(chatInput, BorderLayout.PAGE_END);
     }
-
-
 
     private void createAndShowGUI()
     {
