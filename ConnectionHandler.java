@@ -15,6 +15,7 @@ public class ConnectionHandler implements Runnable
     InputStream is;
     Socket socket;
     ServerSocket serverSocket;
+    Runnable connectionHandler;
     private String message;
     private int id;
 
@@ -26,8 +27,15 @@ public class ConnectionHandler implements Runnable
     public ConnectionHandler(ServerSocket s)
     {
         serverSocket = s;
-
-            listener();
+        try
+        {
+            socket = serverSocket.accept();
+            connectionHandler = new ConnectionHandler(socket);
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        new Thread(connectionHandler).start();
 
     }
 
@@ -35,54 +43,34 @@ public class ConnectionHandler implements Runnable
     @Override
     public void run()
     {
-
-        try
-        {
-
-            int nRead;
-            byte[] data = new byte[16384];
-            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-
-            is = socket.getInputStream();
-            id = is.read();
-
-            while ((nRead = is.read(data, 0, data.length)) != -1)
-            {
-                buffer.write(data, 0, nRead);
-            }
-
-            if (!new String(buffer.toByteArray()).equals(""))
-            {
-                message = new String(buffer.toByteArray());
-                System.out.println("Message recived");
-                System.out.println(id + " : "+ message );
-            }
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
-    }
-
-    public void listener()
-    {
         while (true)
         {
             try
             {
-                socket = serverSocket.accept();
-                Runnable connectionHandler = new ConnectionHandler(socket);
-                new Thread(connectionHandler).start();
+                int nRead;
+                byte[] data = new byte[16384];
+                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
-            } catch (Exception e)
+                is = socket.getInputStream();
+                id = is.read();
+
+                while ((nRead = is.read(data, 0, data.length)) != -1)
+                    buffer.write(data, 0, nRead);
+
+                if (!new String(buffer.toByteArray()).equals(""))
+                {
+                    message = new String(buffer.toByteArray());
+                    System.out.println("Message recived" + id + " : " + message);
+                }
+            } catch (IOException e)
             {
                 e.printStackTrace();
             }
 
         }
-
-
     }
+
+
     public String getMessage()
     {
         return message;

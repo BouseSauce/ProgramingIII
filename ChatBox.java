@@ -1,5 +1,6 @@
 package sample;
 
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -14,32 +15,33 @@ import java.awt.event.ActionListener;
 public class ChatBox
 {
 
-    private JTextField chatInput;
-    private JTextField chatDisplay;
-    private String messages;
     public boolean messageTrigger = false;
+    private JTextField chatInput;
+    private JTextArea chatDisplay;
+    private String messages;
+    private Client client;
 
     public ChatBox()
     {
+        client = new Client("127.0.0.1", 9876);
         createAndShowGUI();
     }
     //-------------------------------------------------------------
     private void addComponentsToPane(Container pane)
     {
 
-        chatDisplay = new JTextField("");
+        chatDisplay = new JTextArea("Chat:");
         chatDisplay.setPreferredSize(new Dimension(200, 200));
         pane.add(chatDisplay, BorderLayout.PAGE_START);
 
         JButton sendButton = new JButton("Send");
-
         ActionListener actionListener = new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                messageTrigger = true;
-                System.out.println(messageTrigger);
+                client.messageHandler(getChatInput());
+                setChatDisplay(getChatInput());
             }
         };
         sendButton.addActionListener(actionListener);
@@ -49,6 +51,8 @@ public class ChatBox
         chatInput = new JTextField("Enter Text here");
         chatInput.setPreferredSize(new Dimension(100, 100));
         pane.add(chatInput, BorderLayout.PAGE_END);
+
+
     }
 
     private void createAndShowGUI()
@@ -77,5 +81,4 @@ public class ChatBox
     {
         return chatInput.getText();
     }
-
 }

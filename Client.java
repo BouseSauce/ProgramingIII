@@ -4,7 +4,6 @@ package sample;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.Charset;
 import java.util.Random;
@@ -14,15 +13,11 @@ import java.util.Random;
 public class Client
 {
 
-    private ChatBox chatBox;
     private ConnectionHandler connectionHandler;
 
     private Socket socket;
-    private ServerSocket serverSocket;
     private OutputStream os;
     private int id = generateID();
-
-
 
     public Client(String ipAdd, int port)
     {
@@ -31,38 +26,21 @@ public class Client
             socket = new Socket(ipAdd, port);
             os = socket.getOutputStream();
             connectionHandler = new ConnectionHandler(socket);
+            connectionHandler.run();
 
         }
         catch (IOException e)
         {
             e.printStackTrace();
         }
-        chatBox = new ChatBox();
-        Runnable myRunnable = new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                    messageHandler();
-            }
-        };
-        myRunnable.run();
-        connectionHandler.run();
-        connectionHandler.listener();
-
-
     }
-
 
     private void sender(String chatInput)
     {
         try
         {
-
             //-----SENDS ID-----
-
             os.write(id);
-
             //-----SENDS MESSAGE-----
             byte[] b = chatInput.getBytes(Charset.forName("UTF-8"));
             os.write(b);
@@ -83,21 +61,10 @@ public class Client
         return ID;
     }
 
-    private void messageHandler()
+    public void messageHandler(String a)
     {
-        while(true)
-        {
-            if (chatBox.messageTrigger == true)
-            {
-                sender(chatBox.getChatInput());
-                System.out.println("ca'''''''");
-                chatBox.setChatDisplay(chatBox.getChatInput());
-                chatBox.messageTrigger = false;
-
-            }
-        }
+        sender(a);
     }
-
 
 
 }

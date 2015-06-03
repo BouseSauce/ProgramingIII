@@ -1,6 +1,6 @@
 package sample;
 
-import java.io.*;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.Charset;
@@ -11,10 +11,10 @@ import java.nio.charset.Charset;
 public class Server
 {
 
+    ConnectionHandler connectionHandler;
     private int port;
     private ServerSocket serverSocket;
     private Socket socket;
-    ConnectionHandler connectionHandler;
 
 
     public Server(int aPort)
@@ -30,11 +30,9 @@ public class Server
             e.printStackTrace();
             System.exit(-1);
         }
-        connectionHandler.run();
-        connectionHandler.listener();
 
 
-        postMessage();
+        //postMessage();
 
     }
 
@@ -42,14 +40,14 @@ public class Server
     {
        while (true)
         {
-            String s = "0hbhg";
-            int id = 12345;
+            String s = connectionHandler.getMessage();
+            int id = connectionHandler.getId();
             OutputStream os;
             try
             {
                 //-----SENDS ID-----
 
-                socket = new Socket("127.0.0.1", 1076);
+                socket = new Socket("127.0.0.1", 9875);
                 os = socket.getOutputStream();
                 os.write(id);
 
@@ -67,5 +65,6 @@ public class Server
             }
         }
     }
+
 
 }
