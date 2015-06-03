@@ -24,6 +24,7 @@ public class Server
         {
             serverSocket = new ServerSocket(port);
             connectionHandler = new ConnectionHandler(serverSocket);
+            connectionHandler.run();
         }
         catch (Exception e)
         {

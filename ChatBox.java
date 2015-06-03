@@ -15,16 +15,20 @@ import java.awt.event.ActionListener;
 public class ChatBox
 {
 
-    public boolean messageTrigger = false;
     private JTextField chatInput;
     private JTextArea chatDisplay;
-    private String messages;
     private Client client;
 
     public ChatBox()
     {
-        client = new Client("127.0.0.1", 9876);
+        String ip = "127.0.0.1";
+        int port = 9876;
+        System.out.println(this.toString());
+        client = new Client(ip, port);
+        client.messageHandler("Message sent to " + ip + " on port " + port);
+
         createAndShowGUI();
+        System.out.println(this.toString());
     }
     //-------------------------------------------------------------
     private void addComponentsToPane(Container pane)

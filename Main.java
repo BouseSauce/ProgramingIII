@@ -10,6 +10,8 @@ public class Main
     {
 
         ChatBox c = new ChatBox();
+        System.out.println("main");
+
     }
 
 }

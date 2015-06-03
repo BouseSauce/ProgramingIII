@@ -22,14 +22,17 @@ public class ConnectionHandler implements Runnable
     public ConnectionHandler(Socket s) throws IOException
     {
         socket = s;
+
+        System.out.println("Server connectionHandler");
     }
 
     public ConnectionHandler(ServerSocket s)
     {
         serverSocket = s;
+
         try
         {
-            socket = serverSocket.accept();
+
             connectionHandler = new ConnectionHandler(socket);
         } catch (IOException e)
         {
@@ -47,6 +50,7 @@ public class ConnectionHandler implements Runnable
         {
             try
             {
+                socket = serverSocket.accept();
                 int nRead;
                 byte[] data = new byte[16384];
                 ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -60,7 +64,7 @@ public class ConnectionHandler implements Runnable
                 if (!new String(buffer.toByteArray()).equals(""))
                 {
                     message = new String(buffer.toByteArray());
-                    System.out.println("Message recived" + id + " : " + message);
+                    System.out.println("Message recived from: " + id + " - " + message);
                 }
             } catch (IOException e)
             {

@@ -21,18 +21,18 @@ public class Client
 
     public Client(String ipAdd, int port)
     {
+
         try
         {
             socket = new Socket(ipAdd, port);
             os = socket.getOutputStream();
-            connectionHandler = new ConnectionHandler(socket);
-            connectionHandler.run();
-
         }
         catch (IOException e)
         {
             e.printStackTrace();
         }
+
+        System.out.println(this.toString());
     }
 
     private void sender(String chatInput)
