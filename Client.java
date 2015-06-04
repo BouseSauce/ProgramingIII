@@ -13,8 +13,6 @@ import java.util.Random;
 public class Client
 {
 
-    private ConnectionHandler connectionHandler;
-
     private Socket socket;
     private OutputStream os;
     private int id = generateID();
@@ -64,6 +62,11 @@ public class Client
     public void messageHandler(String a)
     {
         sender(a);
+    }
+
+    public int getId()
+    {
+        return id;
     }
 
 

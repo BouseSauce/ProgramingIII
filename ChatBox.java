@@ -25,7 +25,7 @@ public class ChatBox
         int port = 9876;
         System.out.println(this.toString());
         client = new Client(ip, port);
-        client.messageHandler("Message sent to " + ip + " on port " + port);
+        client.messageHandler("Message sent to " + ip + " on port " + port + " from : " + client.getId());
 
         createAndShowGUI();
         System.out.println(this.toString());
@@ -46,6 +46,7 @@ public class ChatBox
             {
                 client.messageHandler(getChatInput());
                 setChatDisplay(getChatInput());
+                chatInput.setText(" ");
             }
         };
         sendButton.addActionListener(actionListener);

@@ -16,13 +16,13 @@ public class ConnectionHandler implements Runnable
     Socket socket;
     ServerSocket serverSocket;
     Runnable connectionHandler;
+    ByteArrayOutputStream buffer;
     private String message;
     private int id;
 
     public ConnectionHandler(Socket s) throws IOException
     {
         socket = s;
-
         System.out.println("Server connectionHandler");
     }
 
@@ -32,7 +32,7 @@ public class ConnectionHandler implements Runnable
 
         try
         {
-
+            socket = serverSocket.accept();
             connectionHandler = new ConnectionHandler(socket);
         } catch (IOException e)
         {
@@ -50,10 +50,9 @@ public class ConnectionHandler implements Runnable
         {
             try
             {
-                socket = serverSocket.accept();
                 int nRead;
                 byte[] data = new byte[16384];
-                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                buffer = new ByteArrayOutputStream();
 
                 is = socket.getInputStream();
                 id = is.read();
@@ -66,11 +65,11 @@ public class ConnectionHandler implements Runnable
                     message = new String(buffer.toByteArray());
                     System.out.println("Message recived from: " + id + " - " + message);
                 }
+                buffer.flush();
             } catch (IOException e)
             {
                 e.printStackTrace();
             }
-
         }
     }
 

@@ -32,7 +32,6 @@ public class Server
             System.exit(-1);
         }
 
-
         //postMessage();
 
     }
@@ -57,7 +56,6 @@ public class Server
                 byte[] b = s.getBytes(Charset.forName("UTF-8"));
                 os.write(b);
                 System.out.println("Message was sent from server: ");
-                socket.close();
 
             }
             catch (Exception e)
